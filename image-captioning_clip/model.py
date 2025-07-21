@@ -42,7 +42,8 @@ class ClipCapModel(torch.nn.Module):
             dummy_tokens=torch.zeros(batch_size,self.prefix_length)
             labels=torch.cat((dummy_tokens,tokens),dim=1)
 
-        out=self.gpt(inputs_embeds=embeddings, labels=labels, attention_mask=mask)
+        out=self.gpt(inputs_embeds=embeddings, labels=labels, attention_mask=mask) 
+
 
         return out
     

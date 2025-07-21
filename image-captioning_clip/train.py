@@ -1,7 +1,7 @@
 from transformers import GPT2LMHeadModel, get_linear_schedule_with_warmup
 from torch.amp import autocast, GradScaler
 from torch.utils.data import DataLoader
-from dataset import CaptionsDataset
+from dataset_new import CaptionsDataset
 import torch.nn.functional as F
 from model import ClipCapModel
 from torch.optim import AdamW
@@ -155,7 +155,7 @@ def main():
     val_dataset=CaptionsDataset(data_path="./data/conceptual_clipcap_val.pkl",prefix_length=10)
 
 
-    model=ClipCapModel(prefix_length=10,clip_length=10,prefix_size=768)
+    model=ClipCapModel(prefix_length=10,clip_length=10,prefix_size=512)
 
     train_model(dataset=dataset,val_dataset=val_dataset,model=model,output_dir="./checkpoints",output_prefix='coco_prefix',args=args)
 

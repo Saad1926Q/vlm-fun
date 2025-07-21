@@ -3,3 +3,4 @@ paligemma-3b-pt-224
 __pycache__
 wandb
 checkpoints
+/image-captioning_clip/data
