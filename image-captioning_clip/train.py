@@ -146,18 +146,3 @@ def train_model(dataset:CaptionsDataset,val_dataset: CaptionsDataset,model:ClipC
     run.finish()
     return model
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--bs', type=int, default=4)
-    parser.add_argument('--epochs', type=int, default=2)
-    args = parser.parse_args()
-    dataset = CaptionsDataset(data_path="./data/conceptual_clipcap.pkl",prefix_length=10)
-    val_dataset=CaptionsDataset(data_path="./data/conceptual_clipcap_val.pkl",prefix_length=10)
-
-
-    model=ClipCapModel(prefix_length=10,clip_length=10,prefix_size=512)
-
-    train_model(dataset=dataset,val_dataset=val_dataset,model=model,output_dir="./checkpoints",output_prefix='coco_prefix',args=args)
-
-if __name__ == '__main__':
-    main()
