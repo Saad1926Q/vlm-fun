@@ -58,39 +58,46 @@ def generate_caption(model, clip_embedding, tokenizer:GPT2Tokenizer, max_length=
         # Go from (batch_size,self.prefix_length * self.gpt_embedding_size) to (batch_size,self.prefix_length,self.gpt_embedding_size)
         prefix=model.mapping(clip_embedding).view(-1,model.prefix_length,model.gpt_embedding_size) 
 
-        bos_token_id=torch.tensor([[tokenizer.bos_token_id]],device=device)
-
-        generated_ids=bos_token_id
+        generated_ids = None
 
         for i in range(max_length):
-            token_embeddings=model.gpt.transformer.wte(generated_ids)
 
-            full_embeddings = torch.cat((prefix, token_embeddings), dim=1)
+            if generated_ids is not None:
+                token_embeddings=model.gpt.transformer.wte(generated_ids)
+                full_embeddings = torch.cat((prefix, token_embeddings), dim=1)
+            else:
+                full_embeddings=prefix
 
-            output = model.gpt(inputs_embeds=full_embeddings)
+            output=model.gpt(inputs_embeds=full_embeddings)
 
-            logits=output.logits # (1 , sequence_length, vocab_size)
+            logits=output.logits   #(1 , sequence_length, vocab_size)
 
-            logits_next=logits[:,-1,:]/temperature # (1, vocab_size)
+            logits_next = logits[:, -1, :]  # (1, vocab_size)
 
-            next_token_id=torch.argmax(logits_next,dim=-1).unsqueeze(0)
+            if temperature > 0:
+                logits_next /= temperature
 
-            if next_token_id.item()==tokenizer.eos_token_id:
+            
+            next_token_id = torch.argmax(logits_next, dim=-1).unsqueeze(0)
+
+            if next_token_id.item() == tokenizer.eos_token_id:
                 break
 
-            generated_ids=torch.cat((generated_ids,next_token_id),dim=1)
+            if generated_ids is None:
+                generated_ids = next_token_id
+            else:
+                generated_ids = torch.cat((generated_ids, next_token_id), dim=1)
 
-
-        output_text=tokenizer.decode(token_ids=generated_ids[0],skip_special_tokens=True)
-
+        output_text= tokenizer.decode(generated_ids[0], skip_special_tokens=True)
+    
         return output_text.strip()
-
+    
 
 model=load_model("./checkpoints/coco_prefix_latest.pt")
 
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
-image_url = "https://hips.hearstapps.com/hmg-prod/images/alfa-romeo-stelvio-copy-6809446b927a6.jpg"  
+image_url = "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg"  
 
 image = preprocess_image_from_url(image_url)
 clip_embedding = get_clip_embedding(image)
