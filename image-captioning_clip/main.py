@@ -9,14 +9,14 @@ import argparse
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--bs', type=int, default=256)
-    parser.add_argument('--epochs', type=int, default=15)
+    parser.add_argument('--bs', type=int, default=128)
+    parser.add_argument('--epochs', type=int, default=10)
     args = parser.parse_args()
 
     ds = load_dataset("google-research-datasets/conceptual_captions", "unlabeled")
 
-    clip_embs_train, captions_train = process_dataset(ds["train"], max_samples=100000)
-    clip_embs_val, captions_val = process_dataset(ds["validation"], max_samples=1000)
+    clip_embs_train, captions_train = process_dataset(ds["train"], max_samples=120000)
+    clip_embs_val, captions_val = process_dataset(ds["validation"], max_samples=1500)
 
     train_ds = CaptionsDataset(clip_embs_train, captions_train, prefix_length=10)
     val_ds = CaptionsDataset(clip_embs_val, captions_val, prefix_length=10)

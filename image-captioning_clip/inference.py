@@ -1,7 +1,9 @@
 import torch
 import os
+import cv2
 import argparse
 import requests
+import numpy as np
 from PIL import Image
 from io import BytesIO
 from torch.optim import AdamW
@@ -47,7 +49,7 @@ def get_clip_embedding(pil_image):
     return embedding
 
 
-def generate_caption(model, clip_embedding, tokenizer:GPT2Tokenizer, max_length=40,temperature=1.0):
+def generate_caption(model, clip_embedding, tokenizer:GPT2Tokenizer, max_length=20,temperature=1.0):
 
     # We will be using greedy strategy
 
@@ -93,13 +95,19 @@ def generate_caption(model, clip_embedding, tokenizer:GPT2Tokenizer, max_length=
         return output_text.strip()
     
 
-model=load_model("./checkpoints/coco_prefix_latest.pt")
+model=load_model("./checkpoints/coco_prefix_best.pt")
 
 tokenizer = GPT2Tokenizer.from_pretrained("gpt2")
 
-image_url = "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg"  
+parser = argparse.ArgumentParser()
+parser.add_argument('--url',type=str,default="https://t4.ftcdn.net/jpg/03/24/42/21/360_F_324422176_Lgn7NTeFyNaUKIDu0Ppls1u8zb8wsKS4.jpg" )
+
+args = parser.parse_args()
+
+image_url = args.url
 
 image = preprocess_image_from_url(image_url)
+
 clip_embedding = get_clip_embedding(image)
 
 caption = generate_caption(model, clip_embedding, tokenizer)
