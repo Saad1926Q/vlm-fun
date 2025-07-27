@@ -15,8 +15,8 @@ if __name__ == '__main__':
 
     ds = load_dataset("google-research-datasets/conceptual_captions", "unlabeled")
 
-    clip_embs_train, captions_train = process_dataset(ds["train"], max_samples=120000)
-    clip_embs_val, captions_val = process_dataset(ds["validation"], max_samples=1500)
+    clip_embs_train, captions_train = process_dataset(ds["train"], max_samples=300000)
+    clip_embs_val, captions_val = process_dataset(ds["validation"], max_samples=5000)
 
     train_ds = CaptionsDataset(clip_embs_train, captions_train, prefix_length=10)
     val_ds = CaptionsDataset(clip_embs_val, captions_val, prefix_length=10)
