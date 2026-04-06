@@ -46,6 +46,7 @@ training_args = GRPOConfig(
     max_grad_norm=0.1,
     report_to="none",  # Can use Weights & Biases
     output_dir="outputs",
+    bf16=False,
     # Below enables GSPO:
     importance_sampling_level="sequence",
     mask_truncated_completions=False,
