@@ -4,3 +4,4 @@ __pycache__
 wandb
 checkpoints
 /image-captioning_clip/data
+.venv
