@@ -2,28 +2,12 @@ from config import DATASET, DATASET_SIZE, REASONING_END, REASONING_START, SOLUTI
 from datasets import load_dataset
 
 
-def _resize_images(example):
-    """
-    Resize to (512, 512).
-    """
+def _process(example):
     image = example["images"][0]
     image = image.resize((512, 512))
-    example["images"] = image
-    return example
-
-
-def _convert_to_rgb(example):
-    """
-    Convert to RGB.
-    """
-    image = example["images"]
     if image.mode != "RGB":
         image = image.convert("RGB")
-    example["images"] = image
-    return example
 
-
-def _make_conversation(example):
     text = (
         f"{example['problem'].replace('<image>', '').strip()} "
         f"Provide reasoning between {REASONING_START} and {REASONING_END}, "
@@ -34,15 +18,15 @@ def _make_conversation(example):
         {
             "role": "user",
             "content": [
-                {"type": "image"},  # Placeholder for the image
-                {"type": "text", "text": text},  # The text part of the prompt
+                {"type": "image"},
+                {"type": "text", "text": text},
             ],
         },
     ]
 
     return {
         "prompt": prompt,
-        "image": example["images"],
+        "image": image,
         "answer": example["answer"],
     }
 
@@ -50,7 +34,4 @@ def _make_conversation(example):
 def prepare_dataset():
     split = f"train[:{DATASET_SIZE}]" if DATASET_SIZE else "train"
     dataset = load_dataset(DATASET, split=split)
-    dataset = dataset.map(_resize_images)
-    dataset = dataset.map(_convert_to_rgb)
-    train_dataset = dataset.map(_make_conversation)
-    return train_dataset
+    return dataset.map(_process)
