@@ -3,7 +3,7 @@ import argparse
 from dataset import prepare_dataset
 from model import load_model
 from rewards import correctness_reward_func, formatting_reward_func
-from unsloth import GRPOConfig, GRPOTrainer
+from unsloth.models.rl import UnslothGRPOConfig as GRPOConfig, UnslothGRPOTrainer as GRPOTrainer
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--output_dir", type=str, default="grpo_lora")
