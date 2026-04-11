@@ -2,9 +2,18 @@
 
 this is my first attempt at trying to train a model using grpo
 
-i'll be trying to train a VLM (unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit to be precise) to count objects using GRPO with unsloth
+i'll be trying to train a VLM (unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit to be precise) on ChartQA using GRPO with unsloth
 
 i'll be following the unsloth `Qwen3_VL_(8B)-Vision-GRPO` notebook to get an idea about how to do things
+
+---
+
+## results
+
+| model | dataset | accuracy |
+|---|---|---|
+| Qwen3-VL-8B (baseline, no training) | ChartQA test (500 samples) | 33.6% |
+| Qwen3-VL-8B (GRPO, 1 epoch) | ChartQA test (500 samples) | 35.2% |
 
 ---
 
@@ -43,4 +52,24 @@ python train.py \
   --use_wandb \
   --wandb_project vlm-grpo \
   --wandb_run_name run1
+```
+
+## how to eval
+
+```bash
+python eval.py [args]
+```
+
+### args
+
+| arg | what it does | default |
+|---|---|---|
+| `--num_samples` | number of test samples to evaluate on | `500` |
+| `--batch_size` | batch size for inference | `8` |
+| `--lora_path` | path or hf repo of the trained LoRA (if not set, evaluates the base model) | None |
+
+### example
+
+```bash
+python eval.py --lora_path youruser/qwen3-vl-grpo
 ```

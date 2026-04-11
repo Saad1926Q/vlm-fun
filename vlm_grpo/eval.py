@@ -28,9 +28,11 @@ for batch in tqdm(dataset.iter(batch_size=args.batch_size), total=len(dataset) /
     prompts = batch["prompt"]
     answers = batch["answer"]
 
+    texts = [tokenizer.apply_chat_template(p, tokenize=False, add_generation_prompt=True) for p in prompts]
+
     inputs = tokenizer(
         images,
-        prompts,
+        texts,
         add_special_tokens=False,
         return_tensors="pt",
         padding=True,

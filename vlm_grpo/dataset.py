@@ -35,4 +35,5 @@ def prepare_dataset(split=None):
     if split is None:
         split = f"train[:{DATASET_SIZE}]" if DATASET_SIZE else "train"
     dataset = load_dataset(DATASET, split=split)
-    return dataset.map(_process)
+    dataset = dataset.map(_process)
+    return dataset.select_columns(["prompt", "image", "answer"])
