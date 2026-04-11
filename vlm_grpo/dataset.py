@@ -3,15 +3,15 @@ from datasets import load_dataset
 
 
 def _process(example):
-    image = example["images"][0]
+    image = example["image"]
     image = image.resize((512, 512))
     if image.mode != "RGB":
         image = image.convert("RGB")
 
     text = (
-        f"{example['problem'].replace('<image>', '').strip()} "
+        f"{example['query'].strip()} "
         f"Provide reasoning between {REASONING_START} and {REASONING_END}, "
-        f"then your integer answer between {SOLUTION_START} and {SOLUTION_END}."
+        f"then your answer between {SOLUTION_START} and {SOLUTION_END}."
     )
 
     prompt = [
@@ -27,11 +27,12 @@ def _process(example):
     return {
         "prompt": prompt,
         "image": image,
-        "answer": example["answer"],
+        "answer": example["label"][0],
     }
 
 
-def prepare_dataset():
-    split = f"train[:{DATASET_SIZE}]" if DATASET_SIZE else "train"
+def prepare_dataset(split=None):
+    if split is None:
+        split = f"train[:{DATASET_SIZE}]" if DATASET_SIZE else "train"
     dataset = load_dataset(DATASET, split=split)
     return dataset.map(_process)

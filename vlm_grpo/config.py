@@ -2,8 +2,8 @@ MODEL_NAME = "unsloth/Qwen3-VL-8B-Instruct-unsloth-bnb-4bit"
 MAX_SEQ_LEN = 16384
 LORA_RANK = 16
 
-DATASET = "BUAADreamer/clevr_count_70k"
-DATASET_SIZE = 2000
+DATASET = "HuggingFaceM4/ChartQA"
+DATASET_SIZE = 500
 
 REASONING_START = "<REASONING>"
 REASONING_END = "</REASONING>"
