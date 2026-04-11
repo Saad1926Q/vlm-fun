@@ -43,6 +43,6 @@ def correctness_reward_func(prompts, completions, answer, **kwargs) -> list[floa
     ]
 
     return [
-        2.0 if len(r) == 1 and a == r[0].replace("\n", "") else 0.0
+        2.0 if len(r) == 1 and a.strip() == r[0].strip() else 0.0
         for r, a in zip(responses, answer)
     ]
